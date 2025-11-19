@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "base.path.ex",
+    "type": "java.lang.String",
+    "description": "A description for 'base.path.ex'"
+  },
+  {
+    "name": "base.path.zenki",
+    "type": "java.lang.String",
+    "description": "A description for 'base.path.zenki'"
+  }
+]}

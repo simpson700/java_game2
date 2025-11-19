@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>NCA JAVA2</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+	<link rel="stylesheet" href="/assets/main.css" />
+</head>
+
+<body>
+
+	<h3>新規登録</h3>
+	<form method="post" th:action="@{${path} + 'add_action'}">
+		<div>
+			<label for="name">お名前</label>
+			<input type="text" name="name" id="name" value="" />
+		</div>
+		<div>
+			<label for="kana">カナ</label>
+			<input type="text" name="kana" id="kana" value="" />
+		</div>
+		<div>
+			<label for="email">Email</label>
+			<input type="email" name="email" id="email" value="" />
+		</div>
+		<div>
+			<label for="pass">パスワード</label>
+			<input type="password" name="password" id="password" value="" />
+		</div>
+		<div>
+			<label>血液型</label>
+			<input type="radio" id="blood-a" name="bloodtype" value="A" checked />
+			<label for="blood-a">A</label>
+			<input type="radio" id="blood-o" name="bloodtype" value="O" />
+			<label for="blood-o">O</label>
+			<input type="radio" id="blood-b" name="bloodtype" value="B" />
+			<label for="blood-b">B</label>
+			<input type="radio" id="blood-ab" name="bloodtype" value="AB" />
+			<label for="blood-ab">AB</label>
+		</div>
+		<div>
+			<label for="address">住所</label>
+			<input type="text" name="address" id="address" value="" />
+		</div>
+		<div>
+			<input type="submit" name="submit" id="submit" class="button primary" value="新規登録" />
+		</div>
+	</form>
+	<hr />
+	<a th:href="@{${path} + 'menu_back'}" class="button info">メニュー</a>
+
+</body>
+
+</html>

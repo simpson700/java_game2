@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>第23回：Bootstrapグリッドレイアウト応用演習</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-4">Bootstrapグリッドレイアウト演習（初級）</h1>
+        <p class="mb-4">
+            Bootstrapのグリッドシステムを使って、下記の5問にチャレンジしてみましょう。<br>
+            画面幅やレスポンシブ性、グリッドの応用（入れ子、オフセット、上下センタリングなど）を意識して取り組んでください。
+        </p>
+
+        <!-- 問題1 -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">問題1：可変幅のグリッドを使って4分割</div>
+            <div class="card-body">
+                <p>
+                    <strong>col</strong>クラスのみ（col-mdではなくcol）を使い、横並びに4つのボックスを等幅で表示してください。
+                    <br>ブラウザサイズが小さくなると自動的に縦に並ぶことを確認しましょう。
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <div class="p-3 bg-info text-white text-center">1</div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 bg-primary text-white text-center">2</div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 bg-success text-white text-center">3</div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 bg-warning text-white text-center">4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 問題2 -->
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">問題2：オフセットを使った中央寄せグリッド</div>
+            <div class="card-body">
+                <p>
+                    col-6を使い、左右にオフセット（col-md-offset-3は使えないので<code>offset-md-3</code>）で中央に幅6のボックスを配置してください。<br>
+                    画面が狭いときは幅いっぱい、その場合オフセットは不要です。
+                </p>
+                <div class="row">
+                    <div class="col-12 col-md-6 offset-md-3">
+                        <div class="p-3 bg-light border text-center">中央(6列分)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 問題3 -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">問題3：グリッドのネスト（入れ子）</div>
+            <div class="card-body">
+                <p>
+                    col-md-6の左側にグリッドをネスト（入れ子）し、中に2つのcol-6ボックスを横並びで表示しましょう。<br>
+                    右側は一つのcol-md-6でカラーのみ。
+                </p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="p-2 bg-light border text-center mb-2">左側（ネスト）</div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="p-2 bg-info text-white text-center">A</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 bg-warning text-white text-center">B</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-2 bg-primary text-white text-center">右側（そのまま）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 問題4 -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">問題4：縦方向中央揃え（align-items-center）</div>
+            <div class="card-body">
+                <p>
+                    “row”に<code>align-items-center</code>を付与し、高さ150pxの範囲の中で、縦方向中央揃えになるように3つのcolを配置しましょう。<br>
+                    <span class="text-muted">ヒント：rowにmin-heightなど（style属性可）</span>
+                </p>
+                <div class="row align-items-center" style="min-height: 150px;">
+                    <div class="col">
+                        <div class="p-3 bg-danger text-white text-center">上→中央</div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 bg-success text-white text-center">上→中央</div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 bg-primary text-white text-center">上→中央</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 問題5 -->
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">問題5：レスポンシブで変化するカラム数</div>
+            <div class="card-body">
+                <p>
+                    画面幅によって表示カラム数を切り替えましょう。<br>
+                    <ul>
+                        <li>xs（モバイル）：1列</li>
+                        <li>md（タブレット-）：2列</li>
+                        <li>lg（PC）：4列</li>
+                    </ul>
+                    画像や数字など、好きな内容でOK！
+                </p>
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="p-3 bg-info text-white text-center">1</div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="p-3 bg-primary text-white text-center">2</div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="p-3 bg-success text-white text-center">3</div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3 mb-3">
+                        <div class="p-3 bg-warning text-white text-center">4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- チャレンジ -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">チャレンジ：オリジナルグリッドレイアウト</div>
+            <div class="card-body">
+                <p>
+                    上記のコードや公式サイトを参考に、自分の好きなレイアウトを作ってみましょう。
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <div class="p-2 bg-light border text-center">(ここにオリジナルグリッド！)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/s2design/menu" class="btn btn-outline-secondary">メニューに戻る</a>
+        </div>
+    </div>
+    <!-- Bootstrap JS (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

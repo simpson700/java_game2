@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>NCA JAVA2</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+	<link rel="stylesheet" href="/assets/main.css" />
+</head>
+
+<body>
+
+	<h3>変更</h3>
+	<form method="post" th:action="@{${path} + 'edit_action'}" th:object="${form}">
+		<div>
+			<label for="name">お名前</label>
+			<input type="text" th:field="*{name}" required />
+		</div>
+		<div>
+			<label for="kana">カナ</label>
+			<input type="text" th:field="*{kana}" required />
+		</div>
+		<div>
+			<label for="email">Email</label>
+			<input type="text" th:field="*{email}" required />
+		</div>
+		<div>
+			<label for="password">パスワード</label>
+			<input type="password" th:field="*{password}" />
+		</div>
+		<div>
+			<label>血液型</label>
+			<input type="radio" value="A" th:field="*{bloodtype}" checked required />
+			<label for="bloodtype-a">A</label>
+			<input type="radio" value="O" th:field="*{bloodtype}" />
+			<label for="bloodtype-o">O</label>
+			<input type="radio" value="B" th:field="*{bloodtype}" />
+			<label for="bloodtype-b">B</label>
+			<input type="radio" value="AB" th:field="*{bloodtype}" />
+			<label for="bloodtype-ab">AB</label>
+		</div>
+		<div>
+			<label for="address">住所</label>
+			<input type="text" th:field="*{address}" required />
+		</div>
+		<div>
+			<input type="submit" name="submit" class="button primary" value="変更" />
+			<button type="submit" th:attr="formaction=@{${path} + 'edit_delete'}" th:text="削除"
+				th:onclick="return editBtn('削除')"></button>
+		</div>
+	</form>
+	<hr />
+	<a th:href="@{${path} + 'search'}" class="button info">再検索</a>
+
+</body>
+
+</html>

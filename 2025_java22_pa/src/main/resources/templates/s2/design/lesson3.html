@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>第24回：Bootstrapグリッドレイアウト応用演習（中級）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-4">Bootstrapグリッドレイアウト演習（中級）</h1>
+        <p class="mb-4">
+            Bootstrapのグリッドシステム応用を使って、下記の演習課題(5問)にチャレンジしましょう。<br>
+            カスタムレイアウト・入れ子・縦横中央揃え・可変高さ・順序入れ替えなど、中級レベルの課題です。公式ドキュメントを活用してみてください。
+        </p>
+
+        <!-- 問題1 -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">問題1：左右非対称レイアウト・カスタム比率</div>
+            <div class="card-body">
+                <p>
+                    <strong>col-3</strong>と<strong>col-9</strong>を使い、左にメニュー（高さいっぱい固定）、右にメイン（スクロール可）の2カラムレイアウトを作成してください。<br>
+                    画面幅が狭い場合はメニューが上、メインが下になるようにしましょう（col-12などで対応）。
+                </p>
+                <div class="row min-vh-25">
+                    <div class="col-12 col-md-3 mb-3 mb-md-0">
+                        <div class="p-4 bg-secondary text-white text-center h-100">MENU（左）</div>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <div class="p-4 bg-light border text-center" style="min-height:120px;">MAIN（右）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 問題2 -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">問題2：入れ子×レスポンシブ×上下中央揃え</div>
+            <div class="card-body">
+                <p>
+                    <strong>col-lg-6</strong>の領域を左右に持ち、左側の中をさらに「col-12 col-md-6」で2列の入れ子に。<br>
+                    rowに<code>align-items-center</code>を付け、各ボックスの高さを揃え、縦方向の中央揃えも実現してください。
+                </p>
+                <div class="row align-items-center" style="min-height: 180px;">
+                    <div class="col-lg-6 mb-3 mb-lg-0">
+                        <div class="p-2 bg-light border text-center mb-2">左（入れ子）</div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 mb-2">
+                                <div class="p-4 bg-danger text-white text-center h-100">A</div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="p-4 bg-warning text-white text-center h-100">B</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="p-4 bg-primary text-white text-center h-100">右（そのまま）</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 問題3 -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">問題3：縦揃え＆可変高さグリッド</div>
+            <div class="card-body">
+                <p>
+                    <code>align-items-end</code>または<code>align-items-stretch</code>を利用し、3カラムに異なる高さのボックスを配置してください。<br>
+                    各ボックスには高さを<code>style</code>で任意指定(例50px, 100px, 150px)、フッター部分が揃うようにしましょう。（<span class="text-muted">ヒント: align-items-end</span>）
+                </p>
+                <div class="row align-items-end" style="min-height: 180px;">
+                    <div class="col">
+                        <div class="p-3 bg-success text-white text-center" style="height: 50px;">高さ50px</div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 bg-info text-white text-center" style="height: 100px;">高さ100px</div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 bg-danger text-white text-center" style="height: 150px;">高さ150px</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 問題4 -->
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">問題4：順序入れ替え（Orderクラス）＋レスポンシブ</div>
+            <div class="card-body">
+                <p>
+                    3カラムレイアウトで、画面が<code>md</code>以上のときは<br>
+                    「A | B | C」の順、<br>
+                    <strong>sm以下では「B | A | C」</strong>で並ぶように、Bootstrapの<code>order</code>クラスを使ってください。
+                </p>
+                <div class="row">
+                    <div class="col-4 order-2 order-md-1">
+                        <div class="p-3 bg-primary text-white text-center">A</div>
+                    </div>
+                    <div class="col-4 order-1 order-md-2">
+                        <div class="p-3 bg-warning text-white text-center">B</div>
+                    </div>
+                    <div class="col-4 order-3">
+                        <div class="p-3 bg-success text-white text-center">C</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 問題5 -->
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">問題5：グリッドでギャラリー風カード一覧</div>
+            <div class="card-body">
+                <p>
+                    <code>col-12 col-sm-6 col-md-4 col-lg-3</code> で画面幅に応じて自動分割される4枚以上のカード風グリッド（画像＋タイトル＋テキスト）を作成してください。<br>
+                    画像はUnsplashやダミー画像（例：<code>https://picsum.photos/300/200</code>）を利用してOKです。
+                </p>
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <img src="https://picsum.photos/300/200?random=1" class="card-img-top" alt="ランダム画像1">
+                            <div class="card-body">
+                                <h5 class="card-title">タイトル1</h5>
+                                <p class="card-text">カード内容例1。好きなテキストを入れてください。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <img src="https://picsum.photos/300/200?random=2" class="card-img-top" alt="ランダム画像2">
+                            <div class="card-body">
+                                <h5 class="card-title">タイトル2</h5>
+                                <p class="card-text">カード内容例2。説明を変更してもOK。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <img src="https://picsum.photos/300/200?random=3" class="card-img-top" alt="ランダム画像3">
+                            <div class="card-body">
+                                <h5 class="card-title">タイトル3</h5>
+                                <p class="card-text">グリッド応用の練習。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <img src="https://picsum.photos/300/200?random=4" class="card-img-top" alt="ランダム画像4">
+                            <div class="card-body">
+                                <h5 class="card-title">タイトル4</h5>
+                                <p class="card-text">4枚以上に増やしてもOK!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- チャレンジ -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">チャレンジ：自由課題</div>
+            <div class="card-body">
+                <p>
+                    上記の課題・公式サイト・アイデアを参考に、グリッドを応用した中級レベルのレイアウトを自分で自由にデザインし提出してみましょう。<br>
+                    <span class="text-muted">（レイアウト例：タイムライン・複数段カード・レスポンシブテーブル風など）</span>
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <div class="p-2 bg-light border text-center">(ここにあなたの中級グリッド応用を！)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/s2design/menu" class="btn btn-outline-secondary">メニューに戻る</a>
+        </div>
+    </div>
+    <!-- Bootstrap JS (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

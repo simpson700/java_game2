@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>NCA JAVA2</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+	<link rel="stylesheet" href="/assets/main.css" />
+</head>
+
+<body>
+
+	<h3>検索</h3>
+	<form method="get" th:action="@{${path} + 'list'}" >
+		<div>
+			<label for="kana">カナ</label>
+			<input type="text" name="kana" id="kana" value="" />
+		</div>
+		<div>
+			<label>血液型</label>
+			<input type="radio" id="bloodtype-a"  name="bloodtype" value="A" />
+			<label for="bloodtype-a">A</label>
+			<input type="radio" id="bloodtype-o"  name="bloodtype" value="O" />
+			<label for="bloodtype-o">O</label>
+			<input type="radio" id="bloodtype-b"  name="bloodtype" value="B" />
+			<label for="bloodtype-b">B</label>
+			<input type="radio" id="bloodtype-ab" name="bloodtype" value="AB" />
+			<label for="bloodtype-ab">AB</label>
+		</div>
+		<div>
+			<label for="address">都道府県</label>
+			<select name="address" id="address">
+				<option value="">- 都道府県 -</option>
+				<option th:each="pref : ${prefs}" th:value="${pref}" th:text="${pref}"></option>
+			</select>
+		</div>
+		<div>
+			<input type="submit" name="submit" id="submit" class="button primary" value="検索" />
+		</div>
+	</form>
+	<hr />
+	<div>
+		<a th:href="@{${path} + 'menu_back'}" class="button info">メニュー</a>
+	</div>
+
+</body>
+
+</html>
