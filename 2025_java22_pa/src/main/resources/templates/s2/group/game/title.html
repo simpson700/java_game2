@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>目指せ！　生徒会長</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+		<link rel="stylesheet" href="/assets/main.css" />
+	</head>
+
+	<body>
+		<h3 style="text-align:center">目指せ！　生徒会長</h3>
+		<a>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　</a>
+		<a>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　</a>
+		<a>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　</a>
+		<a>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　</a>
+		<a>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　</a>
+		<a>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　</a>
+		<a>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　</a>
+	
+	</body>
+	
+	<footer>
+		<a th:href="@{${path} + 'add'}" class="button primary">スタート</a>
+		<br />
+		
+		<a th:href="@{${path} + 'search'}" class="button primary">終了</a>
+	
+	
+		<hr />
+	
+		<!-- ログアウト（POST /s2lsn0/perform_logout） -->
+		<!--
+		<a th:href="@{${path} + 'login'}" class="button secondary">ログアウト</a>
+		-->
+		<form th:action="@{${path} + 'perform_logout'}" method="post" style="display:inline;">
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+			<button type="submit" class="button secondary">ログアウト</button>
+		</form>
+	</footer>
+</html>
