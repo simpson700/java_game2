@@ -2,65 +2,63 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>ノベルゲーム風UI</title>
+<title>目指せ！生徒会長オープニング</title>
 
 <style>
-    body {
-        margin: 0;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        font-family: "Meiryo", sans-serif;
-    }
+body {
+    margin: 0;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: "Meiryo", sans-serif;
+    overflow: hidden;
+}
 
-    /* ゲーム画面全体 */
-    .game-screen {
-        width: 800px;
-        height: 450px;
-        position: relative;
-        background-image: url("background.png"); /* ←画像を指定 */
-        background-size: cover;
-        background-position: center;
-    }
+.game-screen {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s ease;
+}
 
-    /* テキストウィンドウ */
-    .text-box {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 140px;
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        padding: 15px 20px;
-        box-sizing: border-box;
-    }
+.text-box {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 180px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
 
-    .text {
-        font-size: 16px;
-        line-height: 1.6;
-        white-space: pre-line;
-    }
+.text {
+    font-size: 26px;
+    line-height: 1.8;
+    white-space: pre-line;
+}
 
-    /* 次へボタン */
-    .next-btn {
-        position: absolute;
-        bottom: 15px;
-        right: 20px;
-        cursor: pointer;
-        font-size: 18px;
-        user-select: none;
-    }
+.next-btn {
+    cursor: pointer;
+    font-size: 26px;
+    user-select: none;
+    align-self: flex-start;
+}
 
-    .next-btn:hover {
-        color: #ffcc00;
-    }
+.next-btn:hover {
+    color: #ffcc00;
+}
 </style>
 </head>
 <body>
 
-<div class="game-screen">
+<div class="game-screen" id="gameScreen">
     <div class="text-box">
         <div id="text" class="text"></div>
         <div class="next-btn" onclick="nextText()">▷ 次へ</div>
@@ -68,27 +66,55 @@
 </div>
 
 <script>
-    const texts = [
-        "鏡を見たら若い頃の自分がそこにいた。",
-        "頭に様々な考えが過ったが、",
-        "保健室の外から怒号が聞こえ、",
-        "好奇心の赴くままドアを開けた。"
-    ];
+const scenes = [
+    { text: "薄暗い病室。心電図の電子音だけが、規則正しく空間を満たしている。", bg: "byousitu.jpg" },
+    { text: "義三は、天井を見つめながら静かに息を吐いた。", bg: "byousitu.jpg" },
+    { text: "（……もう、長くはないな）", bg: "byousitu.jpg" },
+    { text: "医師から告げられた余命は、あとわずか。やり残したことは多い。後悔も、誇りも、すべて胸の奥に沈んだまま――意識が、ゆっくりと遠のいていった。", bg: "byousitu.jpg" },
 
-    let index = 0;
-    const textElement = document.getElementById("text");
+    { text: "……次に目を開けたとき、そこは病室ではなかった。", bg: "hokensitu.jpg" },
+    { text: "白いカーテン。消毒液の匂い。見覚えのある景色。", bg: "hokensitu.jpg" },
+    { text: "（……保健室？）", bg: "hokensitu.jpg" },
+    { text: "上半身を起こし、ふと自分の手を見る。しわだらけの手ではない。", bg: "hokensitu.jpg" },
+    { text: "若く、力のある――17歳の手だった。", bg: "hokensitu.jpg" },
+    { text: "鏡に映ったのは、信じがたいほど若い自分の姿。", bg: "hokensitu.jpg" },
+    { text: "（……冗談だろう。これは）", bg: "hokensitu.jpg" },
+    { text: "戸惑いのまま保健室を出ると、廊下の先から荒れた声が聞こえてくる。気づけば、義三は身体を動かしていた。", bg: "hokensitu.jpg" },
 
-    // 初期表示
-    textElement.textContent = texts[index];
+    { text: "「おい、調子乗ってんじゃねぇぞ」", bg: "rouka.jpg" },
+    { text: "生徒同士のトラブル――いや、明らかな“いじめ”だった。", bg: "rouka.jpg" },
+    { text: "「おい、そこの君たち辞めないか！」", bg: "rouka.jpg" },
+    { text: "義三の声を聞いた途端、いじめをしていた生徒達は即座に逃げていった。", bg: "rouka.jpg" },
+    { text: "その後、騒ぎを聞いた生徒指導の教師がやって来た。", bg: "rouka.jpg" },
+    { text: "「君は……義三だったな。さっきの対応は見事だった」", bg: "rouka.jpg" },
+    { text: "教師はそう言って、少し間を置いてから続けた。", bg: "rouka.jpg" },
+    { text: "「君のような勇気を持った生徒は、今の学校には貴重だ」", bg: "rouka.jpg" },
+    { text: "「……生徒会長選挙に、出てみる気はないか？」", bg: "rouka.jpg" },
+    { text: "突然の提案に、義三は言葉を失う。", bg: "rouka.jpg" },
+    { text: "70年生きてきた男が、再び17歳として、学校の未来を任されようとしている。", bg: "rouka.jpg" },
+    { text: "（……これは、与えられた“やり直し”なのかもしれんな）", bg: "rouka.jpg" },
+    { text: "こうして義三は、人生二度目の高校生活、そして 生徒会長選挙 という新たな挑戦へ足を踏み出すのだった。", bg: "rouka.jpg" }
+];
 
-    function nextText() {
-        if (index < texts.length - 1) {
-            index++;
-            textElement.textContent = texts[index];
-        } else {
-            textElement.textContent = "― 終わり ―";
-        }
+let index = 0;
+const textElement = document.getElementById("text");
+const gameScreen = document.getElementById("gameScreen");
+
+function showScene() {
+    textElement.textContent = scenes[index].text;
+    gameScreen.style.backgroundImage = `url("${scenes[index].bg}")`;
+}
+
+showScene();
+
+function nextText() {
+    if (index < scenes.length - 1) {
+        index++;
+        showScene();
+    } else {
+        textElement.textContent = "― 終わり ―";
     }
+}
 </script>
 
 </body>
