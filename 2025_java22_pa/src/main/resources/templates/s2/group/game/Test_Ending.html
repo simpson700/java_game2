@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>目指せ！生徒会長エンディング</title>
+<style>
+    body {
+        margin: 0;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: "Meiryo", sans-serif;
+    }
+    /* ゲーム画面全体 */
+    .game-screen {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+        background-image: url("senkyo.jpg");
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+    }
+    /* ステータス（左上） - 非表示 */
+    .status {
+        display: none;
+    }
+    .status-box {
+        background: rgba(0, 80, 120, 0.85);
+        color: #fff;
+        padding: 6px 12px;
+        font-size: 18px;
+        border-radius: 4px;
+    }
+    /* テキストウィンドウ - 非表示 */
+    .text-box {
+        display: none;
+    }
+    .text {
+        font-size: 26px;
+        line-height: 1.8;
+        white-space: pre-line;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px #000;
+    }
+    /* 次へボタン（テキスト左揃え） */
+    .next-btn {
+        cursor: pointer;
+        font-size: 26px;
+        user-select: none;
+        align-self: flex-start;
+        text-shadow: 2px 2px 4px #000;
+    }
+    .next-btn:hover {
+        color: #ffcc00;
+    }
+    
+    /* エンディング画面 */
+    .ending-screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+    }
+    .ending-title {
+        font-size: 48px;
+        font-weight: bold;
+        color: #ffeb3b;
+        text-shadow: 3px 3px 6px #000;
+        margin-bottom: 40px;
+        animation: fadeIn 1s ease-in;
+    }
+    .score-list {
+        text-align: center;
+        animation: fadeIn 2s ease-in;
+    }
+    .score-item {
+        font-size: 28px;
+        color: #ff3333;
+        text-shadow: 2px 2px 4px #000;
+        margin: 12px 0;
+        font-weight: bold;
+    }
+    .restart-btn {
+        margin-top: 40px;
+        padding: 12px 30px;
+        font-size: 24px;
+        background: rgba(0, 80, 120, 0.9);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-shadow: 1px 1px 2px #000;
+        animation: fadeIn 3s ease-in;
+    }
+    .restart-btn:hover {
+        background: rgba(0, 100, 150, 1);
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+</head>
+<body>
+<div class="game-screen">
+    <!-- エンディング画面 -->
+    <div class="ending-screen" id="endingScreen">
+        <div class="ending-title" id="endingTitle">あなたは選挙に勝利した</div>
+        <div class="score-list">
+            <div class="score-item">これまで使用した資金：<span id="finalMoney">0</span></div>
+            <div class="score-item">最大支持率：<span id="maxSupport">0</span>%</div>
+            <div class="score-item">平均支持率：<span id="avgSupport">0</span>%</div>
+            <div class="score-item">合計支持率：<span id="totalSupport">0</span>%</div>
+        </div>
+        <button class="restart-btn" onclick="restartGame()">もう一度プレイする</button>
+    </div>
+</div>
+<script>
+    let maxSupport = 65;
+    let totalSupport = 45;
+    let turnCount = 10;
+    let usedMoney = 16;
+    
+    // ページ読み込み時にエンディングを表示
+    window.onload = function() {
+        showEnding();
+    };
+    
+    function nextText() {
+        // エンディング専用なので不要
+    }
+    
+    function showEnding() {
+        // エンディングの種類を判定（デモでは勝利固定）
+        let endingTitle = "あなたは選挙に勝利した";
+        
+        // 別のエンディング例
+        // if (support < 30) endingTitle = "あなたは選挙に敗北した";
+        // if (money < 0) endingTitle = "あなたは生徒会を追放された";
+        
+        document.getElementById("endingTitle").textContent = endingTitle;
+        document.getElementById("finalMoney").textContent = usedMoney;
+        document.getElementById("maxSupport").textContent = maxSupport;
+        document.getElementById("avgSupport").textContent = Math.round(totalSupport / turnCount);
+        document.getElementById("totalSupport").textContent = totalSupport;
+    }
+    
+    function restartGame() {
+        // ゲームをリセット（エンディング画面を再表示）
+        maxSupport = 85;
+        totalSupport = 450;
+        turnCount = 10;
+        usedMoney = 140;
+        
+        showEnding();
+    }
+</script>
+</body>
+</html>
