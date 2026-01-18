@@ -112,7 +112,8 @@ function nextText() {
         index++;
         showScene();
     } else {
-        textElement.textContent = "― 終わり ―";
+        // オープニング終了後、ゲームプレイ画面に遷移
+        window.location.href = 'gameplay.html';
     }
 }
 </script>
