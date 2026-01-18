@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>目指せ！生徒会長ゲームプレイ</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        margin: 0;
+        background: #000;
+        font-family: "Meiryo", sans-serif;
+        overflow: hidden;
+    }
+    .game-screen {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.5s ease;
+    }
+    .status {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        gap: 15px;
+        z-index: 10;
+    }
+    .status-box {
+        background: rgba(0, 80, 120, 0.85);
+        color: #fff;
+        padding: 8px 16px;
+        font-size: 20px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+    .status-box.increase {
+        background: rgba(0, 180, 80, 0.95);
+        transform: scale(1.1);
+    }
+    .status-box.decrease {
+        background: rgba(180, 0, 0, 0.95);
+        transform: scale(1.1);
+    }
+    .text-box {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        min-height: 200px;
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        padding: 30px 50px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .text {
+        font-size: 28px;
+        line-height: 1.8;
+        white-space: pre-line;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px #000;
+    }
+    .next-btn {
+        cursor: pointer;
+        font-size: 28px;
+        user-select: none;
+        align-self: flex-start;
+        text-shadow: 2px 2px 4px #000;
+        transition: color 0.2s;
+    }
+    .next-btn:hover {
+        color: #ffcc00;
+    }
+    .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 10px;
+    }
+    .choice-btn {
+        background: rgba(100, 100, 200, 0.8);
+        color: #fff;
+        padding: 15px 25px;
+        font-size: 22px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: left;
+        line-height: 1.6;
+    }
+    .choice-btn:hover {
+        background: rgba(150, 150, 255, 0.9);
+        border-color: rgba(255, 255, 255, 0.6);
+        transform: translateX(10px);
+    }
+    .hidden {
+        display: none;
+    }
+    
+    @media (max-width: 768px) {
+        .status {
+            top: 10px;
+            left: 10px;
+            gap: 10px;
+        }
+        .status-box {
+            font-size: 16px;
+            padding: 6px 12px;
+        }
+        .text-box {
+            padding: 20px 30px;
+            min-height: 180px;
+        }
+        .text {
+            font-size: 22px;
+        }
+        .next-btn {
+            font-size: 22px;
+        }
+        .choice-btn {
+            font-size: 18px;
+            padding: 12px 20px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="game-screen">
+    <div class="status">
+        <div class="status-box" id="supportBox">支持率：<span id="support">5</span></div>
+        <div class="status-box" id="moneyBox">資金：<span id="money">5</span></div>
+    </div>
+    <div class="text-box">
+        <div id="text" class="text"></div>
+        <div id="nextBtn" class="next-btn">▷ 次へ</div>
+        <div id="choices" class="choices hidden"></div>
+    </div>
+</div>
+<script>
+    const story = [
+        { type: "text", content: "--4月--", bg: "black.jpg"},
+        { type: "text", content: "保健室で目覚め、教師から生徒会長を勧められた翌日。義三は、何事もなかったかのように教室へ向かっていた。", bg: "classroom1.jpg"},
+        { type: "text", content: "（まさか、もう一度高校生として……しかも生徒会長候補か）", bg: null},
+        { type: "text", content: "教室の扉を開けると、ざわめきが一瞬だけ静まる。担任が黒板を叩いた。", bg: null},
+        { type: "text", content: "「転入生だ。自己紹介を頼む」", bg: null},
+        { type: "text", content: "教室の前に立ち、視線が一斉に集まる。義三は静かに息を吸った。", bg: null},
+        { type: "choice", content: "どのように自己紹介をするか？", bg: "classroom1.jpg", choices: [
+                { text: "① 堅実で丁寧な挨拶をする", dialogue: "「義三です。皆さんと一緒に、この学校をより良くしていきたいと思っています」", effects: { support: 1, teacherRating: 0 } },
+                { text: "② 若者らしく軽いトーンで会話する", dialogue: "「義三です！ まだ慣れないことも多いですが、よろしくお願いします！」", effects: { support: 2, teacherRating: 0 } }
+            ] },
+        { type: "text", content: "教室には、控えめな拍手と小さな囁き声が広がった。", bg: null },
+        { type: "text", content: "放課後、担任に呼び止められる。職員室の前で、担任は真剣な表情を浮かべた。", bg: "classroom.jpg" },
+        { type: "text", content: "「義三。昨日の話だが……生徒会長選挙、本気で出る気はあるか？」", bg: null },
+        { type: "text", content: "教師の視線は、試すようでもあり、期待するようでもあった。", bg: null},
+        { type: "choice", content: "どう答えるか？", bg: "classroom.jpg", choices: [
+                { text: "① 「学校を良くしたい」と誠実に語る", dialogue: "「この学校を、もっと良くしたいです」", effects: { support: 0, teacherRating: 0 }},
+                { text: "② 「現状の予算では足りない」と更なる予算を要求する", dialogue: "担任は眉をひそめたが、教頭が横から小銭を差し出した。\n「調査費だ。使いたまえ」", effects: { money: 1, teacherRating: -2 } }
+            ] },
+        { type: "text", content: "担任は小さく息をつき、言った。", bg: null },
+        { type: "text", content: "「覚悟が決まったら、すぐに教えてくれ」", bg: null},
+        { type: "text", content: "--2日後--", bg: "black.jpg" },
+        { type: "text", content: "校舎裏へ続く細い通路を歩いていると、聞き慣れない笑い声が耳に入った。", bg: "ura.jpg" },
+        { type: "text", content: "「……あ？」", bg: "ura.jpg" },
+        { type: "text", content: "曲がり角の先、裏庭に数人の生徒がたむろしている。\n制服は着崩され、校則通りとは言い難い。", bg: "ura.jpg" },
+        { type: "text", content: "彼らは正しく「不良グループ」だった。", bg: null},
+        { type: "text", content: "彼らは義三に気づき、値踏みするような視線を向ける。", bg: null },
+        { type: "text", content: "「転入生だよな。最近、生徒会長に出るって噂の」", bg: null},
+        { type: "text", content: "一人が、ニヤリと笑って近づいてくる。", bg: null },
+        { type: "text", content: "「なあ、アンタ。俺たちのこと、どう思ってんだ？」\n\n空気が一瞬、張り詰めた。", bg: null},
+        { type: "choice", content: "不良グループはあなたに興味があるようだ……", bg: null, choices: [
+                { text: "① 正面から、落ち着いて話しかける", dialogue: "「同じ学校の生徒だ。立場が違うだけだろう」\n\n不良たちは意外そうに目を丸くする。\n「……面白いこと言うじゃねえか」\n\n完全な友好とは言えないが、少なくとも敵視はされなかった。", effects: { delinquentFriendship: 2 } },
+                { text: "② 彼らに合わせ、距離を縮めようとする", dialogue: "「まあ、細かいことはいいじゃないか」\n\n不良たちは大笑いし、肩を叩いてくる。\n\n「お前、話わかるな！」\n\nしかし、物陰からその様子を見ていた生徒がいた。", effects: { delinquentFriendship: 4, teacherRating: -3, support: -1 } }
+            ]
+        },
+        { type: "text", content: "--5月--", bg: "black.jpg" },
+        { type: "text", content: "昼休み。\n\nクラスメイトたちがスマホを囲んで盛り上がっている。", bg: "classroom1.jpg" },
+        { type: "text", content: "「この動画マジでヤバい！義三見て」\n\n話を振られた義三は、思わず懐かしそうに口を開く。", bg: null },
+        { type: "text", content: "「俺がガキだった頃に動画みたいな事をやれば、親からぶたれてたよ」\n\n一瞬、空気が止まった。", bg: null},
+        { type: "text", content: "「ぶたれた？」\n\n「親から？」\n\n「……虐待？」", bg: null },
+        { type: "text", content: "軽い冗談のつもりだったが、クラスの空気が微妙に冷えた。", bg: null },
+        { type: "choice", content: "どうやら話の地雷を踏んでしまったようだ", bg: null, choices: [
+                { text: "① 自分の話を引っ込め、相手の話に合わせる", dialogue: "「ごめん、冗談だよ」\n\n生徒たちは「だよね」と笑い、場の空気は和らいだ。", effects: { support: 2 } },
+                { text: "② そのまま自身の過去の話をする", dialogue: "何人かの生徒は義三の少年時代の話を熱心に聞いていた。\nしかし、多くの生徒は現代からすればあまりにも過酷なその内容に、驚きと同情が入り混じった表情を浮かべ、まるで「大変な人生を送ってきた人」を見るかのような、少し可哀想な目で義三を見つめていた。", effects: { support: 1 } }
+            ]
+        },
+        { type: "text", content: "放課後、文化祭のポスター案を考えることになった。", bg: "classroom2.jpg"},
+        { type: "text", content: "他の生徒が提案するのは「派手な色」「流行りの言葉」「SNS映え」\n義三は無意識に、昔ながらのゴシック体を使った文化祭ポスターを思い浮かべていた。", bg: null},
+        { type: "text", content: "義三が自身の案を提案するも、周囲からは「古すぎると」反対意見がチラホラ出てきた。", bg: null},
+        { type: "choice", content: "文化祭ポスターのデザインで意見が割れてしまった", bg: null, choices: [
+                { text: "① 妥協する", dialogue: "義三の意見に、何人かの生徒は喜びの表情を見せた。\n完成したポスターは、派手でインパクトがあり生徒の間で人気になった。", effects: { support: 2, money: -2, bunkasai: 2 } },
+                { text: "② 自分の案を押し通す", dialogue: "義三の強引な態度に何人かの生徒は不満気になった。\n完成したポスターは、シンプルながらも力強さがあり、教師の間で人気になった。", effects: { teacherRating: 2, support: -1, money: -2, bunkasai: 1 } }
+            ]
+        },
+        { type: "text", content: "--2週間後--", bg: "black.jpg"},
+        { type: "text", content: "この日も何事もなく無事に終わった。", bg: "kaerimiti.jpg" },
+        { type: "text", content: "いつもの帰り道を歩いてると、どこかで聞き覚えのある声がした。", bg: null},
+        { type: "text", content: "「おーい義三！今日暇？」", bg: null},
+        { type: "text", content: "あの時の不良グループだ。\n義三は、内心少し不機嫌になったが、彼らは義三と遊びたがっているようだ。", bg: null},
+        { type: "choice", content: "不良グループたちは、義三を誘っているようだ", bg: null, choices: [
+                { text: "① そのまま追い払う", dialogue: "「今日はそんな暇はないんだ」\n\nそれを聞いた不良たちは、「そうか」とどこか悲しげな声でその場を去っていった。\n\n予想と大きく違った反応に義三は、少し後悔をした。", effects: {} },
+                { text: "② 誘いに乗ってみる", dialogue: "「じゃあ、行こうか！」\n\nその一言を合図に、不良たちは「行こうぜ！」と声を上げ、義三をカラオケやゲームセンターへ連れ出した。\n\n義三は、何十年ぶりかに思いきり遊ぶことができ、胸の奥から込み上げるほど嬉しかった。", effects: { delinquentFriendship: 4 } }
+            ]
+        },
+        { type: "text", content: "--6月--", bg: "black.jpg"},
+        { type: "text", content: "放課後の、生徒会主催の文化祭企画会議。クラス代表や部活動の生徒が集まり、意見が飛び交っていた。", bg: "classroom2.jpg"},
+        { type: "text", content: "「派手なステージやろうぜ！」\n\n「いや、予算が足りないでしょ」", bg: null},
+        { type: "text", content: "議論は次第に白熱し、収拾がつかなくなり始めた。", bg: null},
+        { type: "text", content: "やがて義三が声を上げた。", bg: null},
+        { type: "choice", content: "どのように意見をまとめる？", bg: null, choices: [
+                { text: "① 派手さを重視する", dialogue: "義三は、ざわつく会議室を見渡し、口を開いた。\n\n「細かいことは後でいい。どうせやるなら、一番目立つことをやろう」\n\n一瞬の沈黙の後、教室の奥から歓声が上がった。勢いに乗った生徒たちは次々とアイデアを出し始め、会議は一気に活気づく。\nしかし――教室の隅に座っていた教師は、腕を組んだまま黙り込んでいた。", effects: { support: 2, teacherRating: -3, money: -4, bunkasai: 3 } },
+                { text: "② 予算を重視する", dialogue: "「盛り上がるのは大事だ。だが、使える予算には限りがある」\n\n教室はしばらく沈黙した。義三は、ホワイトボードに金額と案を書き出し、実現可能な範囲を一つずつ整理していく。\n一部の生徒は、不満気だったが、教室の隅に座っていた教師は、安堵の表情を見せていた。", effects: { support: 0, teacherRating: 2, money: -2, bunkasai: 1 } }
+            ]
+        },
+	{ type: "text", content: "--2週間後--", bg: "black.jpg"},
+        { type: "text", content: "教室での出し物準備中。作業が遅れ、苛立ちが広がっていた。", bg: "bunkasai1.jpg"},
+        { type: "text", content: "「いつになったら終わるんだよ！」\n\n「もう7時回ってるんだよ！」\n\n「お前たちが今までサボっていたからこうなっただろ！」", bg: null},
+        { type: "text", content: "教室内は一触即発の雰囲気が漂っていた。", bg: null},
+        { type: "text", content: "そんな中生徒の一人が、「義三なんとかして！」と叫んだ。", bg: null},
+        { type: "choice", content: "今にも生徒同士の衝突が起きそうだ", bg: null, choices: [
+                { text: "① 今日の作業はこれで引き上げる", dialogue: "「これ以上作業を続けても埒が明かない。解散しよう！」\n\n義三の一声に一同は安堵の表情を浮かべ、すぐさま片づけを行った。", effects: { support: 1, bunkasai: 1 } },
+                { text: "② 作業をそのまま続行させる", dialogue: "「今のままでは、文化祭に遅れが出る。続けよう」\n\n義三の一声に、一同は落ち着いたものの、中には舌打ちや愚痴をこぼしている生徒もいた。作業は8時に終わり、全員が疲労困憊だった。", effects: { support: -1, bunkasai: 3 } }
+            ]
+        },
+	{ type: "text", content: "--6日後--", bg: "black.jpg"},
+	{ type: "text", content: "義三が文化祭の準備に向おうとしている中、廊下から怒号が聞こえた。", bg: "rouka2.jpg"},
+	{ type: "text", content: "「今日も文化祭準備をサボってふらついてたな！何度言ったら分かるんだ！？」", bg: "rouka2.jpg"},
+	{ type: "text", content: "その声は生徒指導部の教師の声だった。\n近づいてみると、あの不良グループが叱られていた。", bg: null},
+	{ type: "text", content: "義三に気付いた教師は、すかさず義三を呼んだ。\n\n「おい義三、あいつらはどうやらお前と話したいらしい。別に忙しければ構わない」", bg: null},
+	{ type: "choice", content: "不良たちは義三と話がしたい様だ", bg: null, choices: [
+		{ text: "① 不良たちと話をする", dialogue: "義三は「分かりました」と静かに頷き、別室で不良たちの話を聞くことにした。\nそこには教師の姿はなく、不良たちは学校や教師に対する不満を、溜め込んでいた思いごと吐き出した。\nそして、話終わった後義三は文化祭準備に参加しないかと誘い出した。\nこれに、彼らは喜んで誘いに応じてくれた。\n\nしかし、作業中周囲から冷ややかな視線を感じた。", effects: { support: -2, delinquentFriendship: 5, teacherRating: 3, bunkasai: 2 }},
+		{ text: "② そのまま立ち去る", dialogue: "義三は、用事があるといいその場を立ち去った。\nふと義三が後ろを振り向くと、不良たちはどこか悲しそうな表情をしていた。", effects: { delinquentFriendship: -3,  bunkasai: 1 }}
+	    ]
+	},
+	{ type: "text", content: "--7月--", bg: "black.jpg"},
+	{ type: "text", content: "文化祭開催まで、あと一週間。\n校内は完成間近の装飾や、練習の音で落ち着かない空気に包まれていた。", bg: "seitokaisitu.jpg"},
+	{ type: "text", content: "そんな中、義三は生徒会室に呼び出された。", bg: null},
+	{ type: "text", content: "急遽開かれた会議では、文化祭の予算が想定を上回る支出を出しており、いくつかの出し物や設備を削る必要があった。", bg: null},
+	{ type: "text", content: "その様な状況の中、ある一人の生徒がこう提案した。\nそれは予算の更なる増額だ。", bg: null},
+	{ type: "text", content: "その意見に対し多くの生徒が反対したものの、一部の生徒は賛同していた。\n議論が落ち着いた頃、周囲は義三に意見を求めていた。", bg: null},
+	{ type: "choice", content: "文化祭の予算はどうする？", bg: null, choices: [
+		{ text: "① 現状維持", dialogue: "義三が、予算の現状維持を決定した瞬間、周囲は安堵の空気に包まれた。\n一部生徒は不満気であったものの、今後の方針は固まっていた。", effects: { bunkasai: -2 } },
+		{ text: "② 予算を増額させる", dialogue: "義三が予算増加を決定した瞬間、周囲はざわいていた。\n一部生徒はこの決定に満足気だったものの、ほとんどの生徒が義三に冷ややかな視線を送っていた。", effects: { support: -3, money: -2 } }
+	    ]
+	},
+	{ type: "text", content: "文化祭当日、義三は開会式の司会を行う事になっていた。", bg: "black.jpg"},
+	{ type: "text", content: "登壇に立つと、大勢の生徒が義三を見ており、義三自身も以前は何度か大勢の場で演説を行っていた。\nしかし、10年近くは登壇に立っておらず、義三は若干緊張していた。", bg: "kaikaisiki.jpg"},
+	{ type: "text", content: "やがて義三は口を開いた。", bg: null},
+	{ type: "choice", content: "開会式の演説はどの様に行う？", bg: null, choices: [
+		{ text: "① 原稿通りに行う", dialogue: "義三は、原稿通りに長々と演説を行った。\n義三が話終わる頃には一部の生徒は寝ていた。\n義三は登壇から舞台裏へ移動すると、担任の教師から「よくやった」と褒められた。", effects: { support: -1,teacherRating: 4  } },
+		{ text: "②原稿を無視して砕けた感じで行う", dialogue: "義三が話終わった途端、大勢の生徒が拍手を行い、一部の生徒は「義三最高！」と叫んでいた。\n義三は登壇から舞台裏に移動すると、担任の教師から「義三、お前学校に馴染んできたな」と褒められた。", effects: { support: 1,teacherRating: 2  } }
+	　　]
+	},
+	
+    ];
+
+    let index = 0;
+    let support = 5;
+    let money = 5;
+    let teacherRating = 3;
+    let delinquentFriendship = 0;
+    let bunkasai = 0;
+
+    const textElement = document.getElementById("text");
+    const nextBtn = document.getElementById("nextBtn");
+    const choicesElement = document.getElementById("choices");
+    const supportElement = document.getElementById("support");
+    const moneyElement = document.getElementById("money");
+    const supportBox = document.getElementById("supportBox");
+    const moneyBox = document.getElementById("moneyBox");
+    const gameScreen = document.querySelector(".game-screen");
+
+    function updateStatus(effects) {
+        if (effects.support !== undefined) {
+            support += effects.support;
+            supportElement.textContent = support;
+            if (effects.support > 0) {
+                supportBox.classList.add("increase");
+            } else if (effects.support < 0) {
+                supportBox.classList.add("decrease");
+            }
+            setTimeout(() => {
+                supportBox.classList.remove("increase", "decrease");
+            }, 600);
+        }
+        if (effects.money !== undefined) {
+            money += effects.money;
+            moneyElement.textContent = money;
+            if (effects.money > 0) {
+                moneyBox.classList.add("increase");
+            } else if (effects.money < 0) {
+                moneyBox.classList.add("decrease");
+            }
+            setTimeout(() => {
+                moneyBox.classList.remove("increase", "decrease");
+            }, 600);
+        }
+        if (effects.teacherRating !== undefined) {
+            teacherRating += effects.teacherRating;
+            console.log("教師評価:", teacherRating);
+        }
+        if (effects.delinquentFriendship !== undefined) {
+            delinquentFriendship += effects.delinquentFriendship;
+            console.log("不良好感度:", delinquentFriendship);
+        }
+        if (effects.bunkasai !== undefined) {
+            bunkasai += effects.bunkasai;
+            console.log("文化祭準備度:", bunkasai);
+        }
+    }
+
+    function showText() {
+        const current = story[index];
+        textElement.textContent = current.content;
+        nextBtn.classList.remove("hidden");
+        choicesElement.classList.add("hidden");
+        
+        if (current.bg) {
+            gameScreen.style.backgroundImage = `url("${current.bg}")`;
+        }
+    }
+
+    function showChoices() {
+        const current = story[index];
+        textElement.textContent = current.content;
+        nextBtn.classList.add("hidden");
+        choicesElement.classList.remove("hidden");
+        choicesElement.innerHTML = "";
+        
+        if (current.bg) {
+            gameScreen.style.backgroundImage = `url("${current.bg}")`;
+        }
+        
+        current.choices.forEach((choice, i) => {
+            const btn = document.createElement("button");
+            btn.className = "choice-btn";
+            btn.textContent = choice.text;
+            btn.onclick = () => {
+                if (choice.dialogue) {
+                    textElement.textContent = choice.dialogue;
+                    choicesElement.classList.add("hidden");
+                    nextBtn.classList.remove("hidden");
+                    nextBtn.onclick = () => {
+                        updateStatus(choice.effects);
+                        index++;
+                        nextBtn.onclick = advanceStory;
+                        nextText();
+                    };
+                } else {
+                    updateStatus(choice.effects);
+                    index++;
+                    nextText();
+                }
+            };
+            choicesElement.appendChild(btn);
+        });
+    }
+
+    function nextText() {
+        if (index >= story.length) {
+            return;
+        }
+
+        const current = story[index];
+        
+        if (current.type === "text") {
+            showText();
+        } else if (current.type === "choice") {
+            showChoices();
+            return;
+        }
+    }
+
+    function advanceStory() {
+        if (index < story.length - 1) {
+            index++;
+            nextText();
+        }
+    }
+
+    nextBtn.onclick = advanceStory;
+    nextText();
+</script>
+</body>
+</html>
