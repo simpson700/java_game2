@@ -1,13 +1,13 @@
+
 <!DOCTYPE HTML>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>目指せ！ 生徒会長</title>
+    <title>目指せ! 生徒会長</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-
     <style>
         html, body {
             width: 100%;
@@ -15,7 +15,6 @@
             margin: 0;
             font-family: "Meiryo", sans-serif;
         }
-
         /* 背景全体 */
         .title-screen {
             width: 100%;
@@ -28,7 +27,6 @@
             justify-content: center;
             align-items: center;
         }
-
         /* タイトル文字 */
         .title {
             color: white;
@@ -37,7 +35,6 @@
             margin-bottom: 80px; 
             text-shadow: 2px 2px 6px #000;
         }
-
         /* ボタン共通 */
         .menu-button {
             width: 260px;              
@@ -51,21 +48,28 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             transition: background-color 0.2s, transform 0.2s;
+            cursor: pointer;
+            border: none;
+            display: block;
         }
-
         .menu-button:hover {
             background-color: #2c8cd6;
             transform: translateY(-2px);
         }
     </style>
 </head>
-
 <body>
     <div class="title-screen">
-        <div class="title">目指せ！ 生徒会長</div>
-
-        <a th:href="@{${path} + 'add'}" class="menu-button">スタート</a>
+        <div class="title">目指せ! 生徒会長</div>
+        <button class="menu-button" onclick="startGame()">スタート</button>
         <a th:href="@{${path} + 'search'}" class="menu-button">終了</a>
     </div>
+
+    <script>
+        function startGame() {
+            // オープニング画面（opening.html）に遷移
+            window.location.href = 'opening.html';
+        }
+    </script>
 </body>
 </html>
